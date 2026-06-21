@@ -83,4 +83,4 @@ jupyter notebook analysis.ipynb
 
 ## Auteur
 
-Said Choukri — [LinkedIn](https://linkedin.com/in/said-choukri) · [GitHub](https://github.com/ChoukriSaid)
+Said Choukri — [LinkedIn](https://www.linkedin.com/in/choukrisaid/) · [GitHub](https://github.com/ChoukriSaid)
