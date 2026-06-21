@@ -1,86 +1,86 @@
-# SQL Analytics Case Study — Olist E-Commerce
+# Étude de cas SQL — E-commerce Olist
 
-Business analysis of the [Olist Brazilian e-commerce dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (~100k real orders) using **advanced SQL** on **DuckDB**.
+Analyse business du [dataset e-commerce brésilien Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (~100k commandes réelles) en **SQL avancé** sur **DuckDB**.
 
-This project answers 10 real business questions — each with the query, the result, and an actionable insight. The goal is not just to write SQL, but to turn data into decisions.
+Ce projet répond à 10 questions business concrètes — chacune avec la requête, le résultat et un insight exploitable. L'objectif n'est pas seulement d'écrire du SQL, mais de transformer la donnée en décisions.
 
 ---
 
-## Stack
+## Stack technique
 
 `SQL` · `DuckDB` · `Python` · `pandas` · `Jupyter`
 
 ## Dataset
 
-9 relational tables: orders, order_items, payments, reviews, products, sellers, customers, geolocation, category translation.
-*Data not included in the repo (Kaggle, ~120MB) — see link above.*
+9 tables relationnelles : commandes, articles, paiements, avis, produits, vendeurs, clients, géolocalisation, traduction des catégories.
+*Données non incluses dans le repo (Kaggle, ~120MB) — voir le lien ci-dessus.*
 
 ---
 
-## SQL techniques demonstrated
+## Techniques SQL démontrées
 
-- Multi-table `JOIN`s across the relational schema
-- `GROUP BY` + `HAVING` aggregation and filtering
-- `CASE WHEN` conditional logic and bucketing
-- **CTEs** (`WITH`) for readable, layered logic
-- **Window functions**: `LAG()`, `SUM() OVER ()`, `RANK()`
-
----
-
-## Business questions & insights
-
-### Q1 — Average delivery time by state
-Which Brazilian states have the worst delivery times?
-**Insight:** Northern states (RR, AP, AM) wait ~29 days on average vs 8.7 days for São Paulo — 3x longer. These states have very low order volume, pointing to thin logistics coverage. Decentralized stock would close the gap.
-
-### Q2 — Top 10 sellers by revenue
-Which sellers generate the most revenue?
-**Insight:** 9 of the top 10 sellers are based in São Paulo. Two distinct strategies emerge: high-volume / low-price (SP) vs low-volume / premium-price (the Bahia seller, avg basket €543). Encouraging premium sellers outside SP would diversify revenue geographically.
-
-### Q3 — Late delivery rate
-What share of orders is delivered after the estimated date?
-**Insight:** Only 8.1% of orders are late. The average delivery lands ~12 days *before* the estimate — Olist deliberately over-estimates delivery windows to manage expectations. The real issue is concentrated in the late 8%, likely correlated with the northern states from Q1.
-
-### Q4 — Categories with the best review scores
-Which categories drive the highest customer satisfaction?
-**Insight:** Books and travel accessories lead (4.45 and 4.32 / 5). These are light, easy-to-ship, low-damage products — logistics quality likely explains the scores as much as the product itself.
-
-### Q5 — Monthly revenue growth *(window function)*
-What is the month-over-month revenue trend?
-**Insight:** Revenue grew ~21x in 18 months. November 2017 spikes (+52%, Black Friday). Growth stabilizes in early 2018 around €900k–1M / month — a sign of platform maturity. Uses `LAG()` to compute MoM growth without a self-join.
-
-### Q6 — Average basket by payment method
-Do customers spend more depending on payment type?
-**Insight:** Credit card dominates — 75% of orders and the highest average basket (€163). Vouchers are 3.8% of orders with a basket 2x smaller (€65), suggesting use for small or complementary purchases.
-
-### Q7 — Loyal vs one-time customers *(CTE)*
-Do repeat customers represent a meaningful share of revenue?
-**Insight:** 97% of customers order only once — a major retention problem. Yet repeat customers spend 3x more on average (€421 for 3+ orders vs €138 for one). A loyalty program targeting even 5% of one-time buyers could unlock millions without new acquisition.
-
-### Q8 — Sellers with high negative-review rates *(CTE)*
-Which sellers concentrate the worst customer experiences?
-**Insight:** The worst seller has a 65% negative-review rate over 136 reviews — a suspension candidate. An automatic alert at a 20% negative threshold would let the platform intervene before global ratings degrade.
-
-### Q9 — Product price vs review score
-Do more expensive products get better reviews?
-**Insight:** Price has almost no impact on satisfaction — scores stay between 4.00 and 4.06 across all price brackets. Satisfaction is driven by logistics and service, not by the product's price.
-
-### Q10 — Top 5 categories by revenue & share *(two window functions)*
-Which categories generate the most revenue and what share of the total?
-**Insight:** The top 5 categories account for ~40% of total revenue. Health & Beauty leads (9.4%) with a high average basket despite fewer orders. Uses `SUM() OVER ()` for share-of-total and `RANK()` for ranking.
+- `JOIN` multi-tables sur le schéma relationnel
+- Agrégation et filtrage avec `GROUP BY` + `HAVING`
+- Logique conditionnelle et bucketing avec `CASE WHEN`
+- **CTEs** (`WITH`) pour une logique lisible et structurée en étapes
+- **Window functions** : `LAG()`, `SUM() OVER ()`, `RANK()`
 
 ---
 
-## How to run
+## Questions business & insights
+
+### Q1 — Délai moyen de livraison par état
+Quels états brésiliens ont les pires délais de livraison ?
+**Insight :** Les états du nord (RR, AP, AM) attendent en moyenne ~29 jours contre 8.7 jours pour São Paulo — soit 3x plus longtemps. Ces états ont un très faible volume de commandes, ce qui pointe une faible couverture logistique. Des stocks décentralisés réduiraient ce gap.
+
+### Q2 — Top 10 vendeurs par chiffre d'affaires
+Quels vendeurs génèrent le plus de revenus ?
+**Insight :** 9 des 10 meilleurs vendeurs sont basés à São Paulo. Deux stratégies distinctes émergent : volume élevé / prix bas (SP) vs volume faible / prix premium (le vendeur de Bahia, panier moyen 543€). Encourager les vendeurs premium hors SP diversifierait géographiquement le CA.
+
+### Q3 — Taux de livraisons en retard
+Quelle proportion des commandes est livrée après la date estimée ?
+**Insight :** Seulement 8.1% des commandes sont en retard. En moyenne, les livraisons arrivent ~12 jours *avant* la date estimée — Olist sur-estime volontairement les délais pour gérer les attentes clients. Le vrai problème se concentre sur les 8% en retard, probablement corrélés aux états du nord (Q1).
+
+### Q4 — Catégories avec les meilleurs scores d'avis
+Quelles catégories génèrent la meilleure satisfaction client ?
+**Insight :** Les livres et accessoires de voyage dominent (4.45 et 4.32 / 5). Ce sont des produits légers, faciles à expédier et peu sujets aux dommages — la qualité logistique explique probablement ces scores autant que le produit lui-même.
+
+### Q5 — Croissance mensuelle du CA *(window function)*
+Quelle est la tendance du CA mois par mois ?
+**Insight :** Le CA a été multiplié par ~21 en 18 mois. Pic en novembre 2017 (+52%, Black Friday). La croissance se stabilise début 2018 autour de 900k–1M€/mois — signe de maturité de la plateforme. Utilise `LAG()` pour calculer la croissance MoM sans auto-jointure.
+
+### Q6 — Panier moyen par méthode de paiement
+Les clients dépensent-ils plus selon leur méthode de paiement ?
+**Insight :** La carte de crédit domine — 75% des commandes et le panier moyen le plus élevé (163€). Les vouchers représentent 3.8% des commandes avec un panier 2x plus faible (65€), suggérant un usage pour de petits achats ou en complément.
+
+### Q7 — Clients fidèles vs clients uniques *(CTE)*
+Les clients récurrents représentent-ils une part significative du CA ?
+**Insight :** 97% des clients ne commandent qu'une seule fois — un problème de rétention majeur. Pourtant les clients fidèles dépensent 3x plus en moyenne (421€ pour 3+ commandes vs 138€ pour une seule). Un programme de fidélisation ciblant même 5% des clients uniques pourrait générer des millions sans acquisition.
+
+### Q8 — Vendeurs avec un fort taux d'avis négatifs *(CTE)*
+Quels vendeurs concentrent les pires expériences client ?
+**Insight :** Le pire vendeur a un taux d'avis négatifs de 65% sur 136 avis — un candidat à la suspension. Un système d'alerte automatique à 20% de taux négatif permettrait d'intervenir avant que la note globale de la plateforme se dégrade.
+
+### Q9 — Prix du produit vs score d'avis
+Les produits plus chers reçoivent-ils de meilleurs avis ?
+**Insight :** Le prix n'a quasiment aucun impact sur la satisfaction — les scores restent entre 4.00 et 4.06 quelle que soit la tranche de prix. La satisfaction est pilotée par la logistique et le service, pas par le prix du produit.
+
+### Q10 — Top 5 catégories par CA & part du total *(deux window functions)*
+Quelles catégories génèrent le plus de revenus et quelle part du total ?
+**Insight :** Les 5 premières catégories représentent ~40% du CA total. Health & Beauty domine (9.4%) avec un panier moyen élevé malgré moins de commandes. Utilise `SUM() OVER ()` pour la part du total et `RANK()` pour le classement.
+
+---
+
+## Lancer le projet
 
 ```bash
 pip install duckdb pandas jupyter
-# Download the Olist dataset from Kaggle into the project folder
+# Télécharger le dataset Olist depuis Kaggle dans le dossier du projet
 jupyter notebook analysis.ipynb
 ```
 
 ---
 
-## Author
+## Auteur
 
 Said Choukri — [LinkedIn](https://linkedin.com/in/said-choukri) · [GitHub](https://github.com/ChoukriSaid)
